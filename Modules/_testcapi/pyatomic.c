@@ -53,6 +53,28 @@ test_atomic_add_##suffix(PyObject *self, PyObject *obj) { \
 }
 FOR_ARITHMETIC_TYPES(IMPL_TEST_ADD)
 
+#define IMPL_TEST_ADD_RELAXED(suffix, dtype) \
+static PyObject * \
+test_atomic_add_relaxed_##suffix(PyObject *self, PyObject *obj) { \
+    dtype x = 0; \
+    assert(_Py_atomic_add_##suffix##_relaxed(&x, 1) == 0); \
+    assert(x == 1); \
+    assert(_Py_atomic_add_##suffix##_relaxed(&x, 2) == 1); \
+    assert(x == 3); \
+    assert(_Py_atomic_add_##suffix##_relaxed(&x, -2) == 3); \
+    assert(x == 1); \
+    assert(_Py_atomic_add_##suffix##_relaxed(&x, -1) == 1); \
+    assert(x == 0); \
+    assert(_Py_atomic_add_##suffix##_relaxed(&x, -1) == 0); \
+    assert(x == (dtype)-1); \
+    assert(_Py_atomic_add_##suffix##_relaxed(&x, -2) == (dtype)-1); \
+    assert(x == (dtype)-3); \
+    assert(_Py_atomic_add_##suffix##_relaxed(&x, 2) == (dtype)-3); \
+    assert(x == (dtype)-1); \
+    Py_RETURN_NONE; \
+}
+FOR_ARITHMETIC_TYPES(IMPL_TEST_ADD_RELAXED)
+
 #define IMPL_TEST_COMPARE_EXCHANGE(suffix, dtype) \
 static PyObject * \
 test_atomic_compare_exchange_##suffix(PyObject *self, PyObject *obj) { \
@@ -161,6 +183,8 @@ test_atomic_load_store_int_release_acquire(PyObject *self, PyObject *obj) { \
 
 #define BIND_TEST_ADD(suffix, dtype) \
     {"test_atomic_add_" #suffix, test_atomic_add_##suffix, METH_NOARGS},
+#define BIND_TEST_ADD_RELAXED(suffix, dtype) \
+    {"test_atomic_add_relaxed_" #suffix, test_atomic_add_relaxed_##suffix, METH_NOARGS},
 #define BIND_TEST_COMPARE_EXCHANGE(suffix, dtype) \
     {"test_atomic_compare_exchange_" #suffix, test_atomic_compare_exchange_##suffix, METH_NOARGS},
 #define BIND_TEST_EXCHANGE(suffix, dtype) \
@@ -172,6 +196,7 @@ test_atomic_load_store_int_release_acquire(PyObject *self, PyObject *obj) { \
 
 static PyMethodDef test_methods[] = {
     FOR_ARITHMETIC_TYPES(BIND_TEST_ADD)
+    FOR_ARITHMETIC_TYPES(BIND_TEST_ADD_RELAXED)
     FOR_ALL_TYPES(BIND_TEST_COMPARE_EXCHANGE)
     FOR_ALL_TYPES(BIND_TEST_EXCHANGE)
     FOR_ALL_TYPES(BIND_TEST_LOAD_STORE)

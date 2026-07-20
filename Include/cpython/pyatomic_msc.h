@@ -20,6 +20,7 @@
 
 
 // --- _Py_atomic_add --------------------------------------------------------
+// (sequential consistency)
 
 static inline int8_t
 _Py_atomic_add_int8(int8_t *obj, int8_t value)
@@ -123,6 +124,62 @@ _Py_atomic_add_ssize(Py_ssize_t *obj, Py_ssize_t value)
     _Py_atomic_ASSERT_ARG_TYPE(intptr_t);
     return (Py_ssize_t)_Py_atomic_add_intptr((intptr_t *)obj, (intptr_t)value);
 }
+
+
+// --- _Py_atomic_add --------------------------------------------------------
+// (relaxed consistency)
+
+static inline int
+_Py_atomic_add_int_relaxed(int *obj, int value)
+{ return _Py_atomic_add_int(obj, value); }
+
+static inline int8_t
+_Py_atomic_add_int8_relaxed(int8_t *obj, int8_t value)
+{ return _Py_atomic_add_int8(obj, value); }
+
+static inline int16_t
+_Py_atomic_add_int16_relaxed(int16_t *obj, int16_t value)
+{ return _Py_atomic_add_int16(obj, value); }
+
+static inline int32_t
+_Py_atomic_add_int32_relaxed(int32_t *obj, int32_t value)
+{ return _Py_atomic_add_int32(obj, value); }
+
+static inline int64_t
+_Py_atomic_add_int64_relaxed(int64_t *obj, int64_t value)
+{ return _Py_atomic_add_int64(obj, value); }
+
+static inline intptr_t
+_Py_atomic_add_intptr_relaxed(intptr_t *obj, intptr_t value)
+{ return _Py_atomic_add_intptr(obj, value); }
+
+static inline unsigned int
+_Py_atomic_add_uint_relaxed(unsigned int *obj, unsigned int value)
+{ return _Py_atomic_add_uint(obj, value); }
+
+static inline uint8_t
+_Py_atomic_add_uint8_relaxed(uint8_t *obj, uint8_t value)
+{ return _Py_atomic_add_uint8(obj, value); }
+
+static inline uint16_t
+_Py_atomic_add_uint16_relaxed(uint16_t *obj, uint16_t value)
+{ return _Py_atomic_add_uint16(obj, value); }
+
+static inline uint32_t
+_Py_atomic_add_uint32_relaxed(uint32_t *obj, uint32_t value)
+{ return _Py_atomic_add_uint32(obj, value); }
+
+static inline uint64_t
+_Py_atomic_add_uint64_relaxed(uint64_t *obj, uint64_t value)
+{ return _Py_atomic_add_uint64(obj, value); }
+
+static inline uintptr_t
+_Py_atomic_add_uintptr_relaxed(uintptr_t *obj, uintptr_t value)
+{ return _Py_atomic_add_uintptr(obj, value); }
+
+static inline Py_ssize_t
+_Py_atomic_add_ssize_relaxed(Py_ssize_t *obj, Py_ssize_t value)
+{ return _Py_atomic_add_ssize(obj, value); }
 
 
 // --- _Py_atomic_compare_exchange -------------------------------------------
